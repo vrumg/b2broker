@@ -5,7 +5,9 @@ import (
 	"log"
 	"net"
 
-	"b2broker/internal/app"
+	"b2broker/internal/api"
+	"b2broker/internal/client"
+	"b2broker/internal/client/clientdb"
 	pb "b2broker/pkg/b2brokerpb"
 
 	"google.golang.org/grpc"
@@ -20,7 +22,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	impl := app.NewAPI()
+
+	clientRepo := clientdb.NewDatabase()
+	clientService := client.NewService(clientRepo)
+
+	impl := api.NewAPI(clientService)
 	s := grpc.NewServer()
 	pb.RegisterMessageServiceServer(s, impl)
 	log.Printf("server listening at %v", lis.Addr())

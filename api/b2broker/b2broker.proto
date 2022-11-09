@@ -12,10 +12,14 @@ service MessageService {
   rpc ListChannels (ListChannelsRequest) returns (ListChannelsResponse);
 }
 
+
+
 message ConnectRequest {
+  string username = 1;
 }
 
 message ConnectResponse {
+
 }
 
 message JoinGroupChatRequest {

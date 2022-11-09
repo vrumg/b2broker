@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"context"
@@ -6,18 +6,8 @@ import (
 	desc "b2broker/pkg/b2brokerpb"
 )
 
-type Implementation struct {
-	desc.UnimplementedMessageServiceServer
-}
+func (i *Implementation) Connect(req *desc.ConnectRequest, stream desc.MessageService_ConnectServer) error {
 
-// NewAPI return new instance of Implementation.
-func NewAPI() *Implementation {
-	impl := &Implementation{}
-
-	return impl
-}
-
-func (i *Implementation) Connect(*desc.ConnectRequest, desc.MessageService_ConnectServer) error {
 	return nil
 }
 
