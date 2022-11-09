@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package protobuf;
+option go_package = "b2broker/b2brokerpb";
+
+service MessageService {
+  rpc Connect (ConnectRequest) returns (stream ConnectResponse);
+  rpc JoinGroupChat (JoinGroupChatRequest) returns (JoinGroupChatResponse);
+  rpc LeftGroupChat (LeftGroupChatRequest) returns (LeftGroupChatResponse);
+  rpc CreateGroupChat (CreateGroupChatRequest) returns (CreateGroupChatResponse);
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+  rpc ListChannels (ListChannelsRequest) returns (ListChannelsResponse);
+}
+
+message ConnectRequest {
+}
+
+message ConnectResponse {
+}
+
+message JoinGroupChatRequest {
+}
+
+message JoinGroupChatResponse {
+}
+
+message LeftGroupChatRequest {
+}
+
+message LeftGroupChatResponse {
+}
+
+message CreateGroupChatRequest {
+}
+
+message CreateGroupChatResponse {
+}
+
+message SendMessageRequest {
+}
+
+message SendMessageResponse {
+}
+
+message ListChannelsRequest {
+}
+
+message ListChannelsResponse {
+}
