@@ -1,7 +1,8 @@
 package model
 
 type Message struct {
-	SenderID uint64
-	Payload  string
-	IsGroup  bool
+	SenderID   string
+	ReceiverID string
+	Payload    string
+	IsGroup    bool
 }

@@ -23,11 +23,11 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessageServiceClient interface {
 	Connect(ctx context.Context, in *ConnectRequest, opts ...grpc.CallOption) (MessageService_ConnectClient, error)
+	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
+	CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
+	ListChannels(ctx context.Context, in *ListChannelsRequest, opts ...grpc.CallOption) (*ListChannelsResponse, error)
 	JoinGroupChat(ctx context.Context, in *JoinGroupChatRequest, opts ...grpc.CallOption) (*JoinGroupChatResponse, error)
 	LeftGroupChat(ctx context.Context, in *LeftGroupChatRequest, opts ...grpc.CallOption) (*LeftGroupChatResponse, error)
-	CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error)
-	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
-	ListChannels(ctx context.Context, in *ListChannelsRequest, opts ...grpc.CallOption) (*ListChannelsResponse, error)
 }
 
 type messageServiceClient struct {
@@ -70,6 +70,33 @@ func (x *messageServiceConnectClient) Recv() (*ConnectResponse, error) {
 	return m, nil
 }
 
+func (c *messageServiceClient) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error) {
+	out := new(SendMessageResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.MessageService/SendMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error) {
+	out := new(CreateGroupChatResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.MessageService/CreateGroupChat", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) ListChannels(ctx context.Context, in *ListChannelsRequest, opts ...grpc.CallOption) (*ListChannelsResponse, error) {
+	out := new(ListChannelsResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.MessageService/ListChannels", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *messageServiceClient) JoinGroupChat(ctx context.Context, in *JoinGroupChatRequest, opts ...grpc.CallOption) (*JoinGroupChatResponse, error) {
 	out := new(JoinGroupChatResponse)
 	err := c.cc.Invoke(ctx, "/protobuf.MessageService/JoinGroupChat", in, out, opts...)
@@ -88,43 +115,16 @@ func (c *messageServiceClient) LeftGroupChat(ctx context.Context, in *LeftGroupC
 	return out, nil
 }
 
-func (c *messageServiceClient) CreateGroupChat(ctx context.Context, in *CreateGroupChatRequest, opts ...grpc.CallOption) (*CreateGroupChatResponse, error) {
-	out := new(CreateGroupChatResponse)
-	err := c.cc.Invoke(ctx, "/protobuf.MessageService/CreateGroupChat", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *messageServiceClient) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error) {
-	out := new(SendMessageResponse)
-	err := c.cc.Invoke(ctx, "/protobuf.MessageService/SendMessage", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *messageServiceClient) ListChannels(ctx context.Context, in *ListChannelsRequest, opts ...grpc.CallOption) (*ListChannelsResponse, error) {
-	out := new(ListChannelsResponse)
-	err := c.cc.Invoke(ctx, "/protobuf.MessageService/ListChannels", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
 type MessageServiceServer interface {
 	Connect(*ConnectRequest, MessageService_ConnectServer) error
+	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
+	CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error)
+	ListChannels(context.Context, *ListChannelsRequest) (*ListChannelsResponse, error)
 	JoinGroupChat(context.Context, *JoinGroupChatRequest) (*JoinGroupChatResponse, error)
 	LeftGroupChat(context.Context, *LeftGroupChatRequest) (*LeftGroupChatResponse, error)
-	CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error)
-	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
-	ListChannels(context.Context, *ListChannelsRequest) (*ListChannelsResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -135,20 +135,20 @@ type UnimplementedMessageServiceServer struct {
 func (UnimplementedMessageServiceServer) Connect(*ConnectRequest, MessageService_ConnectServer) error {
 	return status.Errorf(codes.Unimplemented, "method Connect not implemented")
 }
+func (UnimplementedMessageServiceServer) SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+func (UnimplementedMessageServiceServer) CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupChat not implemented")
+}
+func (UnimplementedMessageServiceServer) ListChannels(context.Context, *ListChannelsRequest) (*ListChannelsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListChannels not implemented")
+}
 func (UnimplementedMessageServiceServer) JoinGroupChat(context.Context, *JoinGroupChatRequest) (*JoinGroupChatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method JoinGroupChat not implemented")
 }
 func (UnimplementedMessageServiceServer) LeftGroupChat(context.Context, *LeftGroupChatRequest) (*LeftGroupChatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LeftGroupChat not implemented")
-}
-func (UnimplementedMessageServiceServer) CreateGroupChat(context.Context, *CreateGroupChatRequest) (*CreateGroupChatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupChat not implemented")
-}
-func (UnimplementedMessageServiceServer) SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
-}
-func (UnimplementedMessageServiceServer) ListChannels(context.Context, *ListChannelsRequest) (*ListChannelsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListChannels not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -182,6 +182,60 @@ type messageServiceConnectServer struct {
 
 func (x *messageServiceConnectServer) Send(m *ConnectResponse) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func _MessageService_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MessageService/SendMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).SendMessage(ctx, req.(*SendMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_CreateGroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).CreateGroupChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MessageService/CreateGroupChat",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).CreateGroupChat(ctx, req.(*CreateGroupChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_ListChannels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChannelsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).ListChannels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MessageService/ListChannels",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).ListChannels(ctx, req.(*ListChannelsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MessageService_JoinGroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -220,60 +274,6 @@ func _MessageService_LeftGroupChat_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_CreateGroupChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGroupChatRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessageServiceServer).CreateGroupChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MessageService/CreateGroupChat",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).CreateGroupChat(ctx, req.(*CreateGroupChatRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MessageService_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessageServiceServer).SendMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MessageService/SendMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).SendMessage(ctx, req.(*SendMessageRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MessageService_ListChannels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListChannelsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessageServiceServer).ListChannels(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MessageService/ListChannels",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).ListChannels(ctx, req.(*ListChannelsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -282,24 +282,24 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MessageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "JoinGroupChat",
-			Handler:    _MessageService_JoinGroupChat_Handler,
-		},
-		{
-			MethodName: "LeftGroupChat",
-			Handler:    _MessageService_LeftGroupChat_Handler,
+			MethodName: "SendMessage",
+			Handler:    _MessageService_SendMessage_Handler,
 		},
 		{
 			MethodName: "CreateGroupChat",
 			Handler:    _MessageService_CreateGroupChat_Handler,
 		},
 		{
-			MethodName: "SendMessage",
-			Handler:    _MessageService_SendMessage_Handler,
-		},
-		{
 			MethodName: "ListChannels",
 			Handler:    _MessageService_ListChannels_Handler,
+		},
+		{
+			MethodName: "JoinGroupChat",
+			Handler:    _MessageService_JoinGroupChat_Handler,
+		},
+		{
+			MethodName: "LeftGroupChat",
+			Handler:    _MessageService_LeftGroupChat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -11,3 +11,6 @@ type clientService interface {
 	UnregisterClient(ctx context.Context, clientID string) error
 	GetWriteChan(ctx context.Context, clientID string) (chan<- model.Message, error)
 }
+
+type groupService interface {
+}

@@ -8,6 +8,8 @@ import (
 	"b2broker/internal/api"
 	"b2broker/internal/client"
 	"b2broker/internal/client/clientdb"
+	"b2broker/internal/group"
+	"b2broker/internal/group/groupdb"
 	pb "b2broker/pkg/b2brokerpb"
 
 	"google.golang.org/grpc"
@@ -23,8 +25,11 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	clientRepo := clientdb.NewDatabase()
-	clientService := client.NewService(clientRepo)
+	clientRepo := clientdb.New()
+	clientService := client.New(clientRepo)
+
+	groupRepo := groupdb.New()
+	groupService := group.New(groupRepo)
 
 	impl := api.NewAPI(clientService)
 	s := grpc.NewServer()

@@ -12,8 +12,10 @@ type Database struct {
 	memMap *sync.Map
 }
 
-func NewDatabase() *Database {
-	return &Database{}
+func New() *Database {
+	return &Database{
+		memMap: &sync.Map{},
+	}
 }
 
 func (d *Database) RegisterClient(ctx context.Context, clientID string, ch chan model.Message) error {

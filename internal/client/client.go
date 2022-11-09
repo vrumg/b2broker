@@ -11,7 +11,7 @@ type Service struct {
 	repo repo
 }
 
-func NewService(
+func New(
 	repo repo,
 ) *Service {
 	return &Service{

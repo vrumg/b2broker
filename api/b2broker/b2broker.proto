@@ -5,42 +5,57 @@ option go_package = "b2broker/b2brokerpb";
 
 service MessageService {
   rpc Connect (ConnectRequest) returns (stream ConnectResponse);
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+
+  rpc CreateGroupChat (CreateGroupChatRequest) returns (CreateGroupChatResponse);
+  rpc ListChannels (ListChannelsRequest) returns (ListChannelsResponse);
   rpc JoinGroupChat (JoinGroupChatRequest) returns (JoinGroupChatResponse);
   rpc LeftGroupChat (LeftGroupChatRequest) returns (LeftGroupChatResponse);
-  rpc CreateGroupChat (CreateGroupChatRequest) returns (CreateGroupChatResponse);
-  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
-  rpc ListChannels (ListChannelsRequest) returns (ListChannelsResponse);
 }
 
+message MessagePull {
+  string sender_id = 1;
+  string payload =2;
+  bool is_group = 3;
+}
 
+message MessagePut {
+  string receiver_id = 1;
+  string payload = 2;
+  bool is_group = 3;
+}
 
 message ConnectRequest {
   string username = 1;
 }
 
 message ConnectResponse {
-
+  MessagePull data = 1;
 }
 
 message JoinGroupChatRequest {
+  string chat_name = 1;
 }
 
 message JoinGroupChatResponse {
 }
 
 message LeftGroupChatRequest {
+  string chan_name = 1;
 }
 
 message LeftGroupChatResponse {
 }
 
 message CreateGroupChatRequest {
+  string chat_name = 1;
 }
 
 message CreateGroupChatResponse {
 }
 
 message SendMessageRequest {
+  MessagePut data = 1;
 }
 
 message SendMessageResponse {
@@ -50,4 +65,5 @@ message ListChannelsRequest {
 }
 
 message ListChannelsResponse {
+  repeated string list = 1;
 }
