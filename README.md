@@ -3,18 +3,16 @@
 Server and Client located under ./cmd
 
 Start server with command
-
 ```
 make run-server
 ```
 
 Then open the second terminal and start client with command
-
 ```
 make run-client
 ```
 
-Ensure, that logs look similar to the example below.
+Check logs to look similar to the example below
 
 For server:
 ```
