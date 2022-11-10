@@ -103,6 +103,36 @@ func (s *Service) UnregisterListener(ctx context.Context, groupID string, client
 	return nil
 }
 
+func (s *Service) UnregisterListenerFromAllGroups(ctx context.Context, clientID string) error {
+	groups, err := s.GetGroups(ctx)
+	if err != nil {
+		return fmt.Errorf("UnregisterListenerFromAllGroups: failed to get group names")
+	}
+
+	for _, groupID := range groups {
+		val, ok := s.memMap.Load(groupID)
+		if !ok {
+			log.Printf("UnregisterListenerFromAllGroups: failed to retrieve group name: %s", groupID)
+			continue
+		}
+
+		listeners, ok := val.(map[string]struct{})
+		if !ok {
+			log.Printf("UnregisterListenerFromAllGroups: listeners data corrupted in group %s", groups)
+			continue
+		}
+
+		if _, lok := listeners[clientID]; !lok {
+			log.Printf("UnregisterListenerFromAllGroups: client is not present in group %s", groupID)
+			continue
+		}
+
+		delete(listeners, clientID)
+	}
+
+	return nil
+}
+
 func (s *Service) FindGroup(ctx context.Context, groupID string) (map[string]struct{}, error) {
 	val, ok := s.memMap.Load(groupID)
 	if !ok {

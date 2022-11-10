@@ -43,6 +43,12 @@ func (i *Implementation) sendGroupMessages(ctx context.Context, req *desc.SendMe
 		return false
 	}
 
+	_, ok := listeners[req.Data.SenderId]
+	if !ok {
+		log.Printf("sendGroupMessages: group %s has no listener %s", req.Data.ReceiverId, req.Data.SenderId)
+		return false
+	}
+
 	for val := range listeners {
 		err = i.clientService.SendMessage(ctx, model.Message{
 			SenderID:   req.Data.ReceiverId, // swap receiver and sender to show channel name

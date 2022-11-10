@@ -30,6 +30,10 @@ func (i *Implementation) Connect(req *desc.ConnectRequest, stream desc.MessageSe
 			if err != nil {
 				log.Printf("failed to unregister client: %v", err)
 			}
+			err = i.groupService.UnregisterListenerFromAllGroups(stream.Context(), req.Username)
+			if err != nil {
+				log.Printf("failed to unregister client groups: %v", err)
+			}
 			close(ch)
 			return nil
 

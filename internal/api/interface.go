@@ -20,4 +20,5 @@ type groupService interface {
 	RegisterListener(ctx context.Context, groupID string, clientID string) error
 	UnregisterListener(ctx context.Context, groupID string, clientID string) error
 	FindGroup(ctx context.Context, groupID string) (map[string]struct{}, error)
+	UnregisterListenerFromAllGroups(ctx context.Context, clientID string) error
 }
