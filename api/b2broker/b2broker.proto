@@ -13,6 +13,11 @@ service MessageService {
   rpc LeftGroupChat (LeftGroupChatRequest) returns (LeftGroupChatResponse);
 }
 
+message Group {
+  string group_id = 1;
+  repeated string usernames = 2;
+}
+
 message Message {
   string sender_id = 1;
   string receiver_id = 2;
@@ -62,5 +67,5 @@ message ListChannelsRequest {
 }
 
 message ListChannelsResponse {
-  repeated string list = 1;
+  repeated Group groups = 1;
 }

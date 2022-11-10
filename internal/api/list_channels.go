@@ -17,5 +17,22 @@ func (i *Implementation) ListChannels(ctx context.Context, req *desc.ListChannel
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &desc.ListChannelsResponse{List: groups}, nil
+	resp := make([]*desc.Group, 0, len(groups))
+	for _, group := range groups {
+		listeners, err := i.groupService.GetListeners(ctx, group)
+		if err != nil {
+			log.Printf("failed to get listeners: %v", err)
+			continue
+		}
+		clientIDList := make([]string, 0, len(listeners))
+		for val := range listeners {
+			clientIDList = append(clientIDList, val)
+		}
+		resp = append(resp, &desc.Group{
+			GroupId:   group,
+			Usernames: clientIDList,
+		})
+	}
+
+	return &desc.ListChannelsResponse{Groups: resp}, nil
 }
