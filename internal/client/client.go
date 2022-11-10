@@ -20,7 +20,7 @@ func New() *Service {
 
 func (s *Service) RegisterClient(ctx context.Context, clientID string, ch chan model.Message) error {
 	_, loaded := s.memMap.LoadOrStore(clientID, ch)
-	if !loaded {
+	if loaded {
 		return fmt.Errorf("RegisterClient: client already registered")
 	}
 

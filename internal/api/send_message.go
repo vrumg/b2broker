@@ -39,17 +39,18 @@ func (i *Implementation) sendGroupMessages(ctx context.Context, req *desc.SendMe
 
 	listeners, err := i.groupService.GetListeners(ctx, req.Data.ReceiverId)
 	if err != nil {
-		log.Printf("group %s not found, skip to users: %v", req.Data.ReceiverId, err)
+		log.Printf("sendGroupMessages: group %s not found, skip to users: %v", req.Data.ReceiverId, err)
+		return false
 	}
 
 	for val := range listeners {
 		err = i.clientService.SendMessage(ctx, model.Message{
-			SenderID:   req.Data.SenderId,
+			SenderID:   req.Data.ReceiverId, // swap receiver and sender to show channel name
 			ReceiverID: val,
 			Payload:    req.Data.Payload,
 		})
 		if err != nil {
-			log.Printf("group %s not found, skip to users: %v", req.Data.ReceiverId, err)
+			log.Printf("sendGroupMessages: group %s, user %s: %v", req.Data.ReceiverId, val, err)
 			continue
 		}
 		isSent = true
@@ -65,7 +66,7 @@ func (i *Implementation) sendUserMessage(ctx context.Context, req *desc.SendMess
 		Payload:    req.Data.Payload,
 	})
 	if err != nil {
-		log.Printf("group %s not found, skip to users: %v", req.Data.ReceiverId, err)
+		log.Printf("sendUserMessage: user %s not found: %v", req.Data.ReceiverId, err)
 		return false
 	}
 

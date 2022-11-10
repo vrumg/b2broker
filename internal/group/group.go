@@ -22,7 +22,7 @@ func New() *Service {
 func (s *Service) RegisterGroup(ctx context.Context, groupID string) error {
 	listeners := make(map[string]struct{}, 0)
 	_, loaded := s.memMap.LoadOrStore(groupID, listeners)
-	if !loaded {
+	if loaded {
 		return fmt.Errorf("RegisterGroup: group already registered")
 	}
 
