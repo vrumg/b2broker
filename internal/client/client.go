@@ -3,45 +3,48 @@ package client
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"b2broker/internal/model"
 )
 
 type Service struct {
-	repo repo
+	memMap *sync.Map
 }
 
-func New(
-	repo repo,
-) *Service {
+func New() *Service {
 	return &Service{
-		repo: repo,
+		memMap: &sync.Map{},
 	}
 }
 
 func (s *Service) RegisterClient(ctx context.Context, clientID string, ch chan model.Message) error {
-	err := s.repo.RegisterClient(ctx, clientID, ch)
-	if err != nil {
-		return fmt.Errorf("RegisterClient: %w", err)
+	_, loaded := s.memMap.LoadOrStore(clientID, ch)
+	if !loaded {
+		return fmt.Errorf("RegisterClient: client already registered")
 	}
 
 	return nil
 }
 
 func (s *Service) UnregisterClient(ctx context.Context, clientID string) error {
-	err := s.repo.UnregisterClient(ctx, clientID)
-	if err != nil {
-		return fmt.Errorf("UnregisterClient: %w", err)
-	}
+	s.memMap.Delete(clientID)
 
 	return nil
 }
 
-func (s *Service) GetWriteChan(ctx context.Context, clientID string) (chan<- model.Message, error) {
-	ch, err := s.repo.GetClientData(ctx, clientID)
-	if err != nil {
-		return nil, fmt.Errorf("GetWriteChan: %w", err)
+func (s *Service) SendMessage(ctx context.Context, msg model.Message) error {
+	val, ok := s.memMap.Load(msg.ReceiverID)
+	if !ok {
+		return fmt.Errorf("SendMessage: client's data was not found")
 	}
 
-	return ch, nil
+	ch, ok := val.(chan model.Message)
+	if !ok {
+		return fmt.Errorf("SendMessage: client's data corrupted")
+	}
+
+	ch <- msg
+
+	return nil
 }

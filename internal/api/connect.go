@@ -21,24 +21,24 @@ func (i *Implementation) Connect(req *desc.ConnectRequest, stream desc.MessageSe
 		return status.Error(codes.Internal, "Failed to connect")
 	}
 
-	defer func() {
-		errDefer := i.clientService.UnregisterClient(stream.Context(), req.Username)
-		if errDefer != nil {
-			log.Printf("Failed to unregister client: %v", errDefer)
-		}
-	}()
-
 	for {
 		select {
 		case _ = <-stream.Context().Done():
+			err := i.clientService.UnregisterClient(stream.Context(), req.Username)
+			if err != nil {
+				log.Printf("Failed to unregister client: %v", err)
+			}
+			close(ch)
 			return nil
+
+		// No need to check ok - channel is closed in upper case
 		case message := <-ch:
 			stream.Send(
 				&desc.ConnectResponse{
-					Data: &desc.MessagePull{
-						SenderId: message.SenderID,
-						Payload:  message.Payload,
-						IsGroup:  message.IsGroup,
+					Data: &desc.Message{
+						ReceiverId: message.ReceiverID,
+						SenderId:   message.SenderID,
+						Payload:    message.Payload,
 					},
 				},
 			)
